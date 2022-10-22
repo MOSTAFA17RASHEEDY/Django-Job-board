@@ -1,7 +1,9 @@
+from contextlib import nullcontext
 from pydoc import describe
 from symtable import SymbolTableFactory
 from tkinter import CASCADE
 from django.db import models
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -22,6 +24,11 @@ class job(models.Model):
     salary = models.IntegerField(default=0)
     experince = models.IntegerField(default=1)
     category = models.ForeignKey('category', on_delete=models.CASCADE)
+    slug = models.SlugField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(job, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
